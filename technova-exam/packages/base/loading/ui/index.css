@@ -1,0 +1,24 @@
+.loading {
+    display: inline-flex;
+    gap: 10px;
+}
+.loading:before,
+.loading:after {
+    content: "";
+    height: 20px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(farthest-side, #fff 95%, #000) 35% 35%/6px 6px
+        no-repeat #000;
+    transform: scaleX(var(--s, 1)) rotate(0deg);
+    animation: animate 1s infinite linear;
+}
+.loading:after {
+    --s: -1;
+    animation-delay: -0.1s;
+}
+@keyframes animate {
+    100% {
+        transform: scaleX(var(--s, 1)) rotate(360deg);
+    }
+}
