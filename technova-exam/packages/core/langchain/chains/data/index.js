@@ -13,10 +13,8 @@ const memory = new BufferMemory({
   inputKey: "question",
 });
 
-// 1. Konvertera frpgan till en standalone question
 const standaloneQuestionChain = RunnableSequence.from([standaloneQuestionTemplate, llm, new StringOutputParser()]);
 
-// 2. Använda standalone question för att söka kontext från databasen
 const retrieverChain = RunnableSequence.from([
   (data) => {
     return data.standaloneQuestion;
@@ -24,13 +22,6 @@ const retrieverChain = RunnableSequence.from([
   retriever,
   combineDocuments,
 ]);
-
-// 3. Använda kontexten och den ursprungliga frågan för att fråga språkmodellen
-// const answerChain = RunnableSequence.from([
-//     answerTemplate,
-//     llm,
-//     new StringOutputParser()
-// ]);
 
 const conversationChain = new ConversationChain({
   llm,

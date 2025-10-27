@@ -10,6 +10,7 @@ export const Chat = () => {
 
   return (
     <section className="chat">
+      <h1 className="chat__heading">Välkommen Technovian</h1>
       <section className="chat__messages">
         {messageComponents}
         {loading && <Loading />}
@@ -17,7 +18,7 @@ export const Chat = () => {
 
       <form className="chat__form" onSubmit={handleSubmit}>
         <input type="text" className="chat__input" ref={inputRef} />
-        <button className="chat__btn">Skicka!</button>
+        <button className="chat__btn">Skicka</button>
       </form>
     </section>
   );
