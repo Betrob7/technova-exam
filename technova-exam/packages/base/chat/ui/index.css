@@ -4,13 +4,14 @@
     margin: 0 auto;
     padding: 2rem;
     text-align: center;
-    background-color: black;
+    background: linear-gradient(to right, #283048, #859398);;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 
     .chat__heading {
         text-align: center;
+        font-size: 2.5rem;
         color: white;
     }
 
@@ -18,7 +19,7 @@
         min-height: 300px;
         margin-bottom: 1rem;
         text-align: left;
-        background-color: black;
+        background:linear-gradient(to right, #283048, #859398);;
     }
 
     .chat__form {

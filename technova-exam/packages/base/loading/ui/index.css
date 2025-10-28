@@ -5,18 +5,16 @@
   background: url('../../../../public/robotrex.svg') no-repeat center;
   background-size: contain;
   display: inline-block;
-
-  /* Startanimation: snurra ett varv, sedan pulsera */
   animation: spin-once 1s ease-in-out forwards, pulse 1s ease-in-out 1s infinite alternate;
 }
 
-/* Snurra ett varv */
+
 @keyframes spin-once {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
 
-/* Pulsera fram och tillbaka */
+
 @keyframes pulse {
   from { transform: scale(1); }
   to { transform: scale(1.1); }
