@@ -3,7 +3,7 @@
     margin-bottom: 1rem;
 
     .message__bubble {
-        max-width: 70%;
+        max-width: 50%;
         padding: .5rem 1rem;
         border-radius: 20px;
         background-color: white;
@@ -20,6 +20,17 @@
             margin-bottom: .25rem;
         }
     }
+}
+
+.message__avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background-color: #fff;
+  padding: .25rem;
+  margin: 1rem;
+  object-fit: contain;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
 }
 
 .message--user {

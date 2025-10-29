@@ -18,7 +18,9 @@ export const useChatLogic = () => {
     inputRef.current.value = "";
     const answer = await chain.invoke({ question }, { configurable: { sessionId: "hellu" } });
 
-    setMessages((prev) => [...prev, { role: "assistant", text: answer.response || "Ingen respons." }]);
+    console.log("LLM svar:", answer);
+
+    setMessages((prev) => [...prev, { role: "assistant", text: answer.response || answer.output_text || "Ingen respons." }]);
 
     setLoading(false);
   };

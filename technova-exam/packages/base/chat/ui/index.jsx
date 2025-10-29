@@ -10,7 +10,6 @@ export const Chat = () => {
 
   return (
     <section className="chat">
-      <h1 className="chat__heading">Välkommen Technovian</h1>
       <section className="chat__messages">
         {messageComponents}
         {loading && <Loading />}

@@ -26,7 +26,7 @@ Viktigt:
   new MessagesPlaceholder("chat_history"),
   [
     "user",
-    `KONTEXT:
+    `kontext:
 {context}
 
 FRÅGA:

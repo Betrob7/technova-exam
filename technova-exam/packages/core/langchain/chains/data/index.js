@@ -1,4 +1,4 @@
-import { RunnableSequence, RunnablePassthrough } from "@langchain/core/runnables"; //för att bygga kedjor av steg
+import { RunnableSequence, RunnablePassthrough, RunnableWithFallbacks } from "@langchain/core/runnables"; //för att bygga kedjor av steg
 import { retriever } from "@technova/retriever"; //hämtar relevanta textstycken (chunks) från min Supabase-vectorstore
 import { standaloneQuestionTemplate, answerTemplate } from "@technova/templates"; //mina promptmallar (standalone & answer)
 import { combineDocuments } from "@technova/combinedocuments"; //slår ihop de hämtade chunksen till en sträng
@@ -19,10 +19,21 @@ const standaloneQuestionChain = RunnableSequence.from([standaloneQuestionTemplat
 
 const retrieverChain = RunnableSequence.from([
   (data) => {
-    return data.standaloneQuestion; //plockar bara ut texten
+    console.log("standaloneQuestion:", data.standaloneQuestion);
+    return data.standaloneQuestion;
   },
-  retriever, //söker i din Supabase-vectorstore efter relevanta dokumentchunks
-  combineDocuments, //slår ihop dessa chunks till en enda textsträng (context)
+  async (input) => {
+    console.log("retriever input:", input);
+    const result = await retriever.invoke(input);
+    console.log("retriever output:", result);
+    return result;
+  },
+  async (docs) => {
+    console.log("combineDocuments input:", docs);
+    const combined = await combineDocuments(docs);
+    console.log("combineDocuments output:", combined);
+    return combined;
+  },
 ]);
 
 const conversationChain = new ConversationChain({
@@ -32,14 +43,40 @@ const conversationChain = new ConversationChain({
   memory,
 });
 
-export const chain = RunnableSequence.from([
+const mainChain = RunnableSequence.from([
   {
-    standaloneQuestion: standaloneQuestionChain, //skapar en standalone question
-    originalQuestion: new RunnablePassthrough(), //orginalfrågan sparas
+    // Skapar en standalone question
+    standaloneQuestion: standaloneQuestionChain,
+    originalQuestion: new RunnablePassthrough(),
   },
+
+  (data) => {
+    console.log("Efter standaloneQuestionChain:", data);
+
+    return data;
+  },
+
   {
-    context: retrieverChain, //retrieverChain söker upp FAQ-info baserat på standaloneQuestion
-    question: ({ originalQuestion }) => originalQuestion.question, //question sätts till originaltexten från användaren
+    // Hämtar context via retrieverChain
+    context: retrieverChain,
+    question: ({ originalQuestion }) => originalQuestion.question,
   },
-  conversationChain, //LLM + context + memory → genererar ett svar.
+
+  // Logga output efter retrieverChain
+  (data) => {
+    console.log("Efter retrieverChain:", data);
+    return data;
+  },
+
+  conversationChain, // LLM + context + memory = genererar svar
 ]);
+
+export const chain = new RunnableWithFallbacks({
+  runnable: mainChain,
+  fallbacks: [
+    async (input) => {
+      console.log("Huvudkedjan misslyckades, fallback aktiverad!");
+      return { output_text: "Jag kunde tyvärr inte hämta ett svar just nu." };
+    },
+  ],
+});
