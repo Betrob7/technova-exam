@@ -9,15 +9,16 @@ import { ConversationChain } from "langchain/chains"; //en färdig “LLM + prom
 
 const memory = new BufferMemory({
   memoryKey: "chat_history", //variabeln som används i prompten (MessagesPlaceholder("chat_history"))
-  returnMessages: true, //gör så att historiken skickas som meddelandelista (inte bara text
+  returnMessages: true, //gör så att historiken skickas som meddelandelista och inte bara text
   inputKey: "question", //anger vilket fält i inputen som ska ses som användarens fråga
 });
 
-//RunnableSequence i LangChain är som ett “flödesband” (pipeline) där du kan koppla ihop flera steg så att outputen från ett steg blir inputen till nästa
+//RunnableSequence i LangChain är som ett flöde där man kan koppla ihop flera steg så att outputen från ett steg blir inputen till nästa
 
 const standaloneQuestionChain = RunnableSequence.from([standaloneQuestionTemplate, llm, new StringOutputParser()]); //tar in användarens fråga och omvandlar till standalone question
 
 const retrieverChain = RunnableSequence.from([
+  //tar in standalonequestion, skickar in den som retriever input, sparar ner retriever output i result som returneras.
   (data) => {
     console.log("standaloneQuestion:", data.standaloneQuestion);
     return data.standaloneQuestion;
@@ -29,6 +30,7 @@ const retrieverChain = RunnableSequence.from([
     return result;
   },
   async (docs) => {
+    //retriever output  skickas in som input och körs i combinedocuments
     console.log("combineDocuments input:", docs);
     const combined = await combineDocuments(docs);
     console.log("combineDocuments output:", combined);
@@ -49,9 +51,9 @@ const mainChain = RunnableSequence.from([
     standaloneQuestion: standaloneQuestionChain,
     originalQuestion: new RunnablePassthrough(),
   },
-
+  //mellansteg för att logga ut standaloneQuestionChain
   (data) => {
-    console.log("Efter standaloneQuestionChain:", data);
+    console.log("standaloneQuestionChain:", data);
 
     return data;
   },
@@ -62,13 +64,13 @@ const mainChain = RunnableSequence.from([
     question: ({ originalQuestion }) => originalQuestion.question,
   },
 
-  // Logga output efter retrieverChain
+  // mellansteg för att logga ut retrieverChain
   (data) => {
-    console.log("Efter retrieverChain:", data);
+    console.log("retrieverChain:", data);
     return data;
   },
 
-  conversationChain, // LLM + context + memory = genererar svar
+  conversationChain, // LLM + prompt + memory = genererar svar
 ]);
 
 export const chain = new RunnableWithFallbacks({
@@ -80,3 +82,13 @@ export const chain = new RunnableWithFallbacks({
     },
   ],
 });
+
+//RunnableWithFallbacks fångar enbart fel kopplade till invoken:
+
+//Supabase-anslutningen försvinner
+
+//LLM-anropet till Ollama misslyckas
+
+//Något kastar ett internt fel i LangChains pipeline
+
+//Då kommer fallback-funktionen att köras och returnera output_text.

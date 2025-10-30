@@ -23,7 +23,7 @@ Viktigt:
 - Svara kortfattat, tydligt och trevligt.`,
   ],
 
-  new MessagesPlaceholder("chat_history"),
+  new MessagesPlaceholder("chat_history"), //Skapar en plats i prompten för tidigare meddelanden (konversationens historik). chat_history är nyckeln i memory som innehåller alla tidigare meddelanden.
   [
     "user",
     `kontext:

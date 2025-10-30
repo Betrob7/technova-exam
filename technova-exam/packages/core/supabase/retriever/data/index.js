@@ -1,6 +1,6 @@
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase"; //ett färdigt LangChain-objekt för att prata med Supabase som vektor-databas.
 import { OllamaEmbeddings } from "@langchain/ollama"; //används för att generera embeddings (numeriska representationer av text).
-import { client } from "@technova/client"; //din Supabase-anslutning du skapade tidigare.
+import { client } from "@technova/client"; //Supabase-anslutningen
 
 const embeddings = new OllamaEmbeddings({
   model: "llama3.1:8b",
