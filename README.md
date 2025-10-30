@@ -1,3 +1,5 @@
 # RunnableWithFallbacks
 Jag har valt att använda RunnableWithFallbacks för extra säkerhet runt min RunnableSequence. Den skyddar mot eventuella fel vid invoke till kedjan, så som försvunnen anslutning till supabase, LLM-problem eller interna fel i Langchain biblioteket. Jag upplevde den som smidig att implementera, jag wrappade min mainChain i den och vid något av felen ovan så skickas mitt manuella felmeddelande ut (answer.output_text) vilket underlättar felsökning.
+
+# Supabase screenshot
 <img width="1902" height="677" alt="Snip - technova Smultron AB Supabase och 13 sidor till - Privat - Microsoft Edg" src="https://github.com/user-attachments/assets/77091994-6223-4bdd-8625-8eab5c075dbe" />
